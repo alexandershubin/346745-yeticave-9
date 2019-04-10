@@ -35,11 +35,10 @@ $user_name = 'Alex'; // укажите здесь ваше имя
                     <a class="user-menu__bets" href="pages/my-bets.html">Мои ставки</a>
                     <a class="user-menu__logout" href="#">Выход</a>
                 </div>
-            <?php } ?>
 
-            <?php
+                <?php
 
-            if ($is_auth != "1") {
+            } else {
                 ?>
                 <ul class="user-menu__list">
                     <li class="user-menu__item">
@@ -49,7 +48,8 @@ $user_name = 'Alex'; // укажите здесь ваше имя
                         <a href="#">Вход</a>
                     </li>
                 </ul>
-            <?php } ?>
+            <?php
+            } ?>
         <!-- здесь должен быть PHP код для показа меню и данных пользователя -->
 
         </nav>
