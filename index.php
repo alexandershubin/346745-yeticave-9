@@ -7,13 +7,14 @@ $catigories = ["Доски и лыжи", "Крепления", "Ботинки",
 $index = 0;
 $num = count($catigories);
 
+
 $advert = [
-        [
-            "name" => "2014 Rossignol District Snowboard",
-            "category" => "Доски и лыжи",
-            "price" => "10999",
-            "gif" => "img/lot-1.jpg"
-        ],
+    [
+        "name" => "2014 Rossignol District Snowboard",
+        "category" => "Доски и лыжи",
+        "price" => "10999",
+        "gif" => "img/lot-1.jpg"
+    ],
     [
         "name" => "DC Ply Mens 2016/2017 Snowboard",
         "category" => "Доски и лыжи",
@@ -44,7 +45,18 @@ $advert = [
         "price" => "5400",
         "gif" => "img/lot-6.jpg"
     ],
-]
+];
+
+/**
+ * Форматирует цену
+ * @param $price
+ * @return string
+ */
+function format_price($price) {
+    return number_format(ceil($price), 0, null, ' ') . '₽';
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -72,7 +84,7 @@ $advert = [
 
         <nav class="user-menu">
             <?php
-            if ($is_auth == "1" ) {
+            if ($is_auth) {
                 ?>
                 <div class="user-menu__logged">
                     <p><?php print ($user_name) ?></p>
@@ -132,7 +144,7 @@ $advert = [
                     <div class="lot__state">
                         <div class="lot__rate">
                             <span class="lot__amount">Стартовая цена</span>
-                            <span class="lot__cost"><?=$item["price"];?><b class="rub">р</b></span>
+                            <span class="lot__cost"><?=format_price($item["price"]);?></span>
                         </div>
                         <div class="lot__timer timer">
                             12:23
