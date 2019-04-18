@@ -58,11 +58,18 @@ function format_price($price) {
 
 require_once('helpers.php');
 
-$page_content = include_template('index.php', ['advert' => $advert], ['categories' => $catigories]);
+$content = include_template('index.php', [
+    'index' => $index,
+    'num' => $num,
+    'catigories' => $catigories,
+    'advert' => $advert
+]);
 $layout_content = include_template('layout.php', [
-    'content' => $page_content,
+    'is_auth' => $is_auth,
     'user_name' => $user_name,
-    'title' => 'YetiCave - Главная страница'
+    'content' => $content,
+    'catigories' => $catigories,
+    'title' => 'YetiCave - Главная страница',
 ]);
 
 print($layout_content);
