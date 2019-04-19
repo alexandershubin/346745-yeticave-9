@@ -1,4 +1,6 @@
 <?php
+date_default_timezone_set("Europe/Moscow");
+
 $is_auth = rand(0, 1);
 
 $user_name = 'Alex'; // укажите здесь ваше имя
@@ -58,6 +60,7 @@ function format_price($price) {
 
 require_once('helpers.php');
 
+//шаблоны
 $content = include_template('index.php', [
     'index' => $index,
     'num' => $num,
@@ -74,3 +77,23 @@ $layout_content = include_template('layout.php', [
 ]);
 
 print($layout_content);
+
+//функция вычисляет оставшееся время
+function show_date () {
+    $ts = time();
+    $ts_midnight = strtotime('tomorrow');
+    $new_day = $ts_midnight - $ts;
+
+    $hours = floor($new_day / 3600);
+    $minutes = floor(($new_day % 3600) / 60);
+    $main_time = $hours .':' . $minutes;
+    $first_class = "timer--finishing";
+    $class = "";
+
+    if ($hours <= 1) {
+        return array($main_time, $first_class);
+    } else {
+        return array($main_time, $class);
+    }
+}
+
