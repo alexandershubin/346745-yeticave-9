@@ -1,3 +1,4 @@
+
 <main class="container">
     <section class="promo">
         <h2 class="promo__title">Нужен стафф для катки?</h2>
@@ -33,7 +34,7 @@
                             <span class="lot__cost"><?=format_price($item["price"]);?></span>
                         </div>
                         <div class="lot__timer timer">
-                            12:23
+                            <?=show_date()[1];?>
                         </div>
                     </div>
                 </div>
