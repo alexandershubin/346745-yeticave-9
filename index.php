@@ -60,13 +60,12 @@ function format_price($price) {
 
 require_once('helpers.php');
 
-
-
+//шаблоны
 $content = include_template('index.php', [
     'index' => $index,
     'num' => $num,
     'catigories' => $catigories,
-    'advert' => $advert,
+    'advert' => $advert
 ]);
 
 $layout_content = include_template('layout.php', [
@@ -79,6 +78,7 @@ $layout_content = include_template('layout.php', [
 
 print($layout_content);
 
+//функция вычисляет оставшееся время
 function show_date () {
     $ts = time();
     $ts_midnight = strtotime('tomorrow');
