@@ -64,6 +64,7 @@ $content = include_template('index.php', [
     'catigories' => $catigories,
     'advert' => $advert
 ]);
+
 $layout_content = include_template('layout.php', [
     'is_auth' => $is_auth,
     'user_name' => $user_name,
