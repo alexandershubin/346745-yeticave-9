@@ -12,7 +12,7 @@ create table catigories (
 
 create table lots (
     id int auto_increment primary key,
-    date_create timestamp not null ,
+    date_create timestamp default current_timestamp,
     name_lot char not null ,
     discription text not null ,
     picture char,
@@ -39,11 +39,7 @@ create table users(
 
 create index name_category on catigories(name_category);
 create index name_lot on lots(name_lot);
-create index summa on wager(sum);
+create index wager_date on wager(date);
 create index user_name on users(user_name);
 
-create unique index simvol_code on catigories(simvol_code);
-create unique index price on lots(price);
-create unique index sum on wager(sum);
-create unique index email on users(email);
 
