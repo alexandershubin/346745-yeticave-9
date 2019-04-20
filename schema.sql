@@ -17,7 +17,7 @@ create table lots (
     discription text not null ,
     picture char,
     price int not null  unique ,
-    last_data timestamp not null ,
+    last_data timestamp null,
     step tinyint not null
 );
 
