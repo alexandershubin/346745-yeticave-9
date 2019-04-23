@@ -23,7 +23,7 @@ create table lots (
 
 create table wager (
     id int auto_increment primary key,
-    date timestamp,
+    wager_date timestamp,
     sum int not null unique
 );
 
@@ -39,7 +39,7 @@ create table users(
 
 create index name_category on catigories(name_category);
 create index name_lot on lots(name_lot);
-create index wager_date on wager(date);
+create index wager_date on wager(wager_date);
 create index user_name on users(user_name);
 
 
