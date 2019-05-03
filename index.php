@@ -1,5 +1,7 @@
 
 <?php
+require_once('helpers.php');
+
 date_default_timezone_set("Europe/Moscow");
 
 $is_auth = rand(0, 1);
@@ -59,7 +61,6 @@ function format_price($price) {
     return number_format(ceil($price), 0, null, ' ') . '₽';
 }
 
-require_once('helpers.php');
 
 //шаблоны
 $content = include_template('index.php', [
@@ -97,4 +98,47 @@ function show_date () {
         return array($main_time, $class);
     }
 }
+
+$link = mysqli_connect("localhost", "root", "password","yeticave");
+mysqli_set_charset($link, "utf8");
+
+if (!$link) {
+    $error = mysqli_connect_error();
+    $content = include_template('error.php', ["error" => $error]);
+}
+else {
+    $sql = "select * from catigories";
+    $result = mysqli_query($link, $sql);
+
+    if ($result) {
+        $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    }
+    else {
+        $error = mysqli_error($link);
+        $content = include_template('error.php', ["error" => $error]);
+    }
+
+    $sql = "select * from lots where last_data > now() order by date_create desc";
+
+    if ($res = mysqli_query($link, $sql)) {
+        $lots = mysqli_fetch_all($res, MYSQLI_ASSOC);
+        $layout_content = include_template('layout.php', [
+            'is_auth' => $is_auth,
+            'user_name' => $user_name,
+            'content' => $content,
+            'catigories' => $catigories,
+            'title' => 'YetiCave - Главная страница',
+        ]);
+    }
+    else {
+        $content = include_template("error.php", ['error'=> mysqli_error($link)]);
+    }
+}
+
+print($content = include_template('index.php', [
+    'index' => $index,
+    'num' => $num,
+    'catigories' => $catigories,
+    'advert' => $advert
+]));
 
