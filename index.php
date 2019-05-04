@@ -99,46 +99,50 @@ function show_date () {
     }
 }
 
+//подключаемся к Mysql
 $link = mysqli_connect("localhost", "root", "password","yeticave");
 mysqli_set_charset($link, "utf8");
-
+//проверяем соединение
 if (!$link) {
-    $error = mysqli_connect_error();
-    $content = include_template('error.php', ["error" => $error]);
+    print("Ошибка подключения: " . mysqli_connect_error());
 }
 else {
-    $sql = "select * from catigories";
-    $result = mysqli_query($link, $sql);
+    print("Соединение установлено");
+    // выполнение запросов
+}
+//запрос на категории
+$sql = "select * from catigories";
 
-    if ($result) {
-        $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    }
-    else {
-        $error = mysqli_error($link);
-        $content = include_template('error.php', ["error" => $error]);
-    }
+$result = mysqli_query($link, $sql);
 
-    $sql = "select * from lots where last_data > now() order by date_create desc";
+if ($result) {
+    $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+else {
+    print("Ошибка подключения: " . mysqli_connect_error());
+}
+//запрос на лоты
+$sql = "select * from lots where last_data > now() order by date_create desc";
 
-    if ($res = mysqli_query($link, $sql)) {
-        $lots = mysqli_fetch_all($res, MYSQLI_ASSOC);
-        $layout_content = include_template('layout.php', [
-            'is_auth' => $is_auth,
-            'user_name' => $user_name,
-            'content' => $content,
-            'catigories' => $catigories,
-            'title' => 'YetiCave - Главная страница',
-        ]);
-    }
-    else {
-        $content = include_template("error.php", ['error'=> mysqli_error($link)]);
-    }
+if ($result) {
+    $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    $content = include_template('index.php', [
+        'index' => $index,
+        'num' => $num,
+        'catigories' => $catigories,
+        'advert' => $advert
+    ]);
+}
+else {
+    print("Ошибка подключения: " . mysqli_connect_error());
 }
 
-print($content = include_template('index.php', [
-    'index' => $index,
-    'num' => $num,
+print($layout_content = include_template('layout.php', [
+    'is_auth' => $is_auth,
+    'user_name' => $user_name,
+    'content' => $content,
     'catigories' => $catigories,
-    'advert' => $advert
+    'title' => 'YetiCave - Главная страница',
 ]));
+
 
