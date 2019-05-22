@@ -8,6 +8,8 @@ $is_auth = rand(0, 1);
 
 $user_name = 'Alex'; // укажите здесь ваше имя
 
+$title = 'YetiCave - Главная страница'; //имя сраницы
+
 $catigories = ["Доски и лыжи", "Крепления", "Ботинки", "Одежда", "Инструменты", "Разное"];
 $index = 0;
 $num = count($catigories);
@@ -63,6 +65,7 @@ function format_price($price) {
 
 
 //шаблоны
+/*
 $content = include_template('index.php', [
     'index' => $index,
     'num' => $num,
@@ -75,10 +78,10 @@ $layout_content = include_template('layout.php', [
     'user_name' => $user_name,
     'content' => $content,
     'catigories' => $catigories,
-    'title' => 'YetiCave - Главная страница',
+    'title' => $title,
 ]);
 
-print($layout_content);
+print($layout_content);*/
 
 //функция вычисляет оставшееся время
 function show_date () {
@@ -132,6 +135,16 @@ if ($result) {
         'catigories' => $catigories,
         'advert' => $advert
     ]);
+
+    //сценарий дя лот пхп
+    print($lot_content = include_template('lot.php', [
+        'advert' => $advert,
+        'index' => $index,
+        'content' => $content,
+        'catigories' => $catigories,
+        'num' => $num,
+        'title' => 'YetiCave - Главная страница',
+    ]));
 }
 else {
     print("Ошибка подключения: " . mysqli_connect_error());
@@ -141,6 +154,7 @@ print($layout_content = include_template('layout.php', [
     'is_auth' => $is_auth,
     'user_name' => $user_name,
     'content' => $content,
+    'lot_content' => $lot_content,
     'catigories' => $catigories,
     'title' => 'YetiCave - Главная страница',
 ]));
