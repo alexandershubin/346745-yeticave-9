@@ -5,7 +5,7 @@
             <?php
             while ($index < $num) : ?>
                 <li class="nav__item">
-                    <a href="pages/all-lots.html"><? $catigories[$index]; ?></a>
+                    <a href=""/?tab=new""><? $catigories[$index]; ?></a>
                 </li>
                 <?php $index++; ?>
             <?php endwhile; ?>

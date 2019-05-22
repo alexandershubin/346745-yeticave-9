@@ -136,27 +136,121 @@ if ($result) {
         'advert' => $advert
     ]);
 
-    //сценарий дя лот пхп
-    print($lot_content = include_template('lot.php', [
-        'advert' => $advert,
-        'index' => $index,
-        'content' => $content,
-        'catigories' => $catigories,
-        'num' => $num,
-        'title' => 'YetiCave - Главная страница',
-    ]));
 }
 else {
     print("Ошибка подключения: " . mysqli_connect_error());
 }
 
-print($layout_content = include_template('layout.php', [
-    'is_auth' => $is_auth,
-    'user_name' => $user_name,
-    'content' => $content,
-    'lot_content' => $lot_content,
-    'catigories' => $catigories,
-    'title' => 'YetiCave - Главная страница',
-]));
+if (isset($_GET['id'])) {
+    $lotId = $_GET['id'];
+} else {
+    http_response_code(404);
+    header("Location: pages/404.html");
+}
+
+$lotsIdsSql = "SELECT id FROM lots";
+$ids = getMysqlSelectionResult($link, $lotsIdsSql);
+
+if (!isInArray($ids, $lotId)) {
+    http_response_code(404);
+    header("Location: pages/404.html");
+}
+
+$lotSql = "SELECT l.name_lot AS name, user_id,
+            c.name_catigories AS catigory, about, current_cost,
+            rate_step, image, end_at 
+            FROM lots AS l JOIN catigories AS c
+            ON c.id = catigory_id 
+            WHERE l.id = $lotId";
+
+$categoriesSql = "SELECT name FROM catigories ORDER BY id";
+
+$ratesSql = "SELECT user_id, r.cost, u.full_name AS user_name, 
+             r.created_at AS rate_time 
+             FROM rates AS r JOIN users AS u
+             ON u.id = user_id
+             WHERE r.lot_id = $lotId
+             ORDER BY r.created_at DESC";
+
+$lot = getMysqlSelectionAssocResult($link, $lotSql);
+$categories = getMysqlSelectionResult($link, $categoriesSql);
+$rates = getMysqlSelectionResult($link, $ratesSql);
+tagsTransforming('strip_tags', $lot, $categories, $rates);
+
+$ratesCount = empty($rates) ? 0 : count($rates);
+$showRate = true;
+
+if (!isset($_SESSION['user_id'])) {
+    $showRate = false;
+} else {
+    $userId = $_SESSION['user_id'];
+    if ($lot['user_id'] === $userId) {
+        $showRate = false;
+    } elseif (isset($rates[0]['user_id'])) {
+        $lastRateUserId = $rates[0]['user_id'];
+        $showRate = $lastRateUserId === $userId ? false : true;
+    } elseif (strtotime($lot['end_at']) < time()) {
+        $showRate = false;
+    }
+}
+
+$minRate = $lot['current_cost'] + $lot['rate_step'];
+
+$contentAdress = 'lot.php';
+$contentValues = [ 'advert' => $advert,
+    'lot' => $advert,
+    'lotId' => $lotId,
+    'minRate' => $minRate,
+    'rates' => $rates,
+    'ratesCount' => $ratesCount,
+    'showRate' => $showRate,
+    'cost' => '',
+    'success' => '',
+    'errors' => []
+];
+
+if (isset($_POST['submit']) && $showRate) {
+    $errors = [];
+    $cost = (int) $_POST['cost'];
+
+    if (empty($cost)) {
+        $errors['cost'] = 'Поле должно быть заполнено!';
+    } elseif ($cost < $minRate || $cost != round($cost)) {
+        $errors['cost'] = 'Введите корректную цену!';
+    }
+
+    $contentValues['cost'] = $cost;
+    $contentValues['errors'] = $errors;
+
+    if (empty($errors)) {
+        $userId = $_SESSION['user_id'];
+        $rateData = [$cost, $userId, $lotId];
+        $rateSql = "INSERT INTO rates 
+                (cost, user_id, lot_id)
+                VALUES (?, ?, ?)";
+        $lotData = [$cost, $lotId];
+        $lotSql = "UPDATE lots SET current_cost = ? WHERE id = ?";
+        $newRate = insertDataMysql($link, $rateSql, $rateData);
+        $updatedLot = insertDataMysql($link, $lotSql, $lotData);
+
+        $contentValues['success'] = 'Ставка успешно добавлена';
+    }
+}
+
+$pageContent = include_template($contentAdress, $contentValues);
+
+$layoutAdress = 'layout.php';
+$layoutValues = [
+    'pageTitle' => $advert['name'],
+    'isAuth' => $is_auth,
+    'userName' => $user_name,
+    'categories' => $categories,
+    'pageContent' => $pageContent
+];
+
+$pageLayout = include_template($layoutAdress, $layoutValues);
+
+print $pageLayout;
+
 
 
